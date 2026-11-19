@@ -1,221 +1,111 @@
-// ==========================================
-// NOUVELLE VISION SOFTWARE
-// Catalogue connecté à Supabase via Render
-// ==========================================
+(() => {
+  "use strict";
 
-const API_BASE_URL = window.NV_CONFIG?.apiBaseUrl || 
-    "https://nouvelle-vision-software.onrender.com";
+  const API_BASE_URL = (window.NV_CONFIG?.apiBaseUrl || "").replace(/\/+$/, "");
+  const grid = document.getElementById("productGrid");
+  const year = document.getElementById("year");
 
-const grid = document.getElementById("productGrid");
+  if (year) year.textContent = new Date().getFullYear();
+  if (!grid) return;
 
-// Vérification du catalogue
-if (!grid) {
-    console.error("Product grid not found");
-}
+  const categoryAliases = {
+    business: "business", entreprise: "business",
+    retail: "retail", commerce: "retail", hospitality: "retail", restaurant: "retail",
+    management: "management", gestion: "management", education: "management"
+  };
 
-// Traduction des catégories
-function normalizeCategory(category) {
-    const value = String(category || "")
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .trim();
+  function normalizeCategory(value) {
+    const key = String(value || "").trim().toLowerCase();
+    return categoryAliases[key] || "management";
+  }
 
-    if (["retail", "commerce de detail", "commerce", "vente"].includes(value)) {
-        return "retail";
-    }
-
-    if (["management", "gestion", "hospitality"].includes(value)) {
-        return "management";
-    }
-
-    if (["business", "entreprise"].includes(value)) {
-        return "business";
-    }
-
-    return value;
-}
-
-// Traduction des types
-function getProductType(category) {
-    const cat = normalizeCategory(category);
-
-    const types = {
-        retail: "Retail",
-        management: "Management",
-        business: "Business"
-    };
-
-    return types[cat] || "Software";
-}
-
-// Sécurisation du texte affiché
-function escapeHTML(value) {
-    return String(value ?? "").replace(/[&<>"']/g, char => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#039;"
-    })[char]);
-}
-
-// Formatage des prix
-function formatPrice(cents) {
-    const amount = Number(cents || 0) / 100;
-
+  function money(cents) {
+    const amount = Number(cents);
+    if (!Number.isFinite(amount)) return "Contact us";
     return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-        maximumFractionDigits: 2
-    }).format(amount);
-}
+      style: "currency", currency: "USD", maximumFractionDigits: 2
+    }).format(amount / 100);
+  }
 
-// Création des cartes
-function renderProducts(products, filter = "all") {
+  function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    })[char]);
+  }
 
-    if (!grid) return;
+  function render(products, filter = "all") {
+    const visible = products.filter(product =>
+      filter === "all" || normalizeCategory(product.category) === filter
+    );
 
-    const filteredProducts = products.filter(product => {
-        return filter === "all" ||
-            normalizeCategory(product.category) === filter;
-    });
-
-    if (filteredProducts.length === 0) {
-        grid.innerHTML = `
-            <p class="product-message">
-                No software found in this category.
-            </p>
-        `;
-        return;
+    if (!visible.length) {
+      grid.innerHTML = '<p class="products-message">No products found in this category.</p>';
+      return;
     }
 
-    grid.innerHTML = filteredProducts.map(product => {
+    grid.innerHTML = visible.map(product => {
+      const name = escapeHTML(product.name);
+      const description = escapeHTML(product.description);
+      const icon = escapeHTML(product.icon || "▦");
+      const category = normalizeCategory(product.category);
+      const monthly = money(product.monthly_price_cents);
+      const license = money(product.license_price_cents);
+      const subject = encodeURIComponent("Product enquiry: " + (product.name || "Software"));
 
-        const name = escapeHTML(product.name);
-        const description = escapeHTML(product.description);
-        const icon = escapeHTML(product.icon || "▦");
-        const type = escapeHTML(getProductType(product.category));
-
-        const price = formatPrice(product.license_price_cents);
-
-        return `
-            <article class="product-card">
-
-                <div class="product-icon">
-                    ${icon}
-                </div>
-
-                <small>${type.toUpperCase()}</small>
-
-                <h3>${name}</h3>
-
-                <p>${description}</p>
-
-                <div class="product-meta">
-
-                    <div>
-                        <strong>${price}</strong>
-                        <br>
-                        <small>Indicative license price</small>
-                    </div>
-
-                    <a href="mailto:sales@nouvellevisionsoftware.com?subject=${encodeURIComponent("Enquiry: " + product.name)}">
-                        Enquire →
-                    </a>
-
-                </div>
-
-            </article>
-        `;
-
+      return `
+        <article class="product-card">
+          <div class="product-icon">${icon}</div>
+          <small>${escapeHTML(category.toUpperCase())}</small>
+          <h3>${name}</h3>
+          <p>${description}</p>
+          <div class="product-meta">
+            <div>
+              <strong>${monthly}</strong><br><small>per month</small>
+              <br><strong>${license}</strong><br><small>one-time license</small>
+            </div>
+            <a href="mailto:sales@nouvellevisionsoftware.com?subject=${subject}">Enquire →</a>
+          </div>
+        </article>`;
     }).join("");
-}
+  }
 
-// Chargement des produits depuis Render
-async function loadProducts() {
+  async function loadProducts() {
+    grid.innerHTML = '<p class="products-message">Loading products...</p>';
 
-    if (!grid) return;
-
-    grid.innerHTML = `
-        <p class="product-message">
-            Loading software products...
-        </p>
-    `;
+    if (!API_BASE_URL) {
+      grid.innerHTML = '<p class="products-message">The product service is not configured yet.</p>';
+      return;
+    }
 
     try {
+      const response = await fetch(`${API_BASE_URL}/api/products`, {
+        headers: { "Accept": "application/json" }
+      });
+      if (!response.ok) throw new Error(`API request failed (${response.status})`);
 
-        const response = await fetch(
-            `${API_BASE_URL}/api/products`
-        );
+      const result = await response.json();
+      if (!Array.isArray(result.products)) {
+        throw new Error("Unexpected product data received from the API.");
+      }
 
-        if (!response.ok) {
-            throw new Error(`HTTP error: ${response.status}`);
-        }
+      window.NV_PRODUCTS = result.products;
+      render(result.products);
 
-        const result = await response.json();
-
-        if (!Array.isArray(result.products)) {
-            throw new Error("Invalid products response");
-        }
-
-        const products = result.products;
-
-        if (products.length === 0) {
-            grid.innerHTML = `
-                <p class="product-message">
-                    No products available at the moment.
-                </p>
-            `;
-            return;
-        }
-
-        // Affichage initial
-        renderProducts(products);
-
-        // Gestion des filtres
-        document.querySelectorAll(".filter").forEach(button => {
-
-            button.addEventListener("click", () => {
-
-                document.querySelectorAll(".filter").forEach(btn => {
-                    btn.classList.remove("active");
-                });
-
-                button.classList.add("active");
-
-                renderProducts(
-                    products,
-                    button.dataset.filter
-                );
-
-            });
-
+      document.querySelectorAll(".filter").forEach(button => {
+        button.addEventListener("click", () => {
+          document.querySelectorAll(".filter").forEach(item => item.classList.remove("active"));
+          button.classList.add("active");
+          render(result.products, button.dataset.filter || "all");
         });
-
-        console.log(
-            `${products.length} products loaded successfully`
-        );
-
+      });
     } catch (error) {
-
-        console.error("Product loading error:", error);
-
-        grid.innerHTML = `
-            <p class="product-message">
-                Unable to load products. Please try again later.
-            </p>
-        `;
-
+      console.error("Unable to load Nouvelle Vision products:", error);
+      grid.innerHTML = `
+        <p class="products-message">
+          We couldn't load the products right now. Please refresh the page or contact our team.
+        </p>`;
     }
-}
+  }
 
-// Année actuelle
-const yearElement = document.getElementById("year");
-
-if (yearElement) {
-    yearElement.textContent = new Date().getFullYear();
-}
-
-// Démarrage
-loadProducts();
+  loadProducts();
+})();
