@@ -1,2 +1,3 @@
-// Set this to your deployed Render API URL after deployment.
-window.NV_CONFIG = { apiBaseUrl: "" };
+window.NV_CONFIG = {
+  apiBaseUrl: "https://nouvelle-vision-software.onrender.com"
+};
