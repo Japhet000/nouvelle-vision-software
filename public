@@ -1,1 +1,54 @@
-
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Business software that helps teams work smarter.">
+  <title>Nouvelle Vision Software — Smart Software. Powerful Businesses.</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#"><span class="brand-mark">NV</span><span>NOUVELLE VISION<small>SOFTWARE</small></span></a>
+  <nav><a href="#products">Products</a><a href="#why">Why NV</a><a href="#pricing">Pricing</a><a href="#contact">Contact</a></nav>
+  <a class="nav-cta" href="#products">Explore software <span>↗</span></a>
+</header>
+<main>
+  <section class="hero">
+    <div class="hero-copy">
+      <div class="eyebrow"><i></i> SOFTWARE FOR AMBITIOUS BUSINESSES</div>
+      <h1>Run your business.<br><em>Not your software.</em></h1>
+      <p class="lead">Powerful, practical tools for managing sales, customers, teams and daily operations — online or on your own computer.</p>
+      <div class="hero-actions"><a class="button primary" href="#products">Explore products <span>→</span></a><a class="text-link" href="#why">Discover our approach <span>↗</span></a></div>
+      <div class="proof"><div class="avatars"><b>NV</b><b>+</b><b>24/7</b></div><span>Built for modern businesses<br><strong>Worldwide access</strong></span></div>
+    </div>
+    <div class="hero-visual">
+      <div class="glow"></div><div class="dashboard">
+        <div class="dash-head"><div><small>BUSINESS OVERVIEW</small><h3>Good morning 👋</h3></div><span class="live">● LIVE PREVIEW</span></div>
+        <div class="metric-row"><div class="metric"><small>Total revenue</small><strong>$24,680</strong><span class="up">↗ 12.8%</span></div><div class="metric"><small>Orders</small><strong>1,284</strong><span class="up">↗ 8.2%</span></div></div>
+        <div class="chart-title"><b>Revenue overview</b><small>Last 7 days</small></div>
+        <div class="bars"><i style="height:34%"></i><i style="height:52%"></i><i style="height:43%"></i><i style="height:70%"></i><i style="height:58%"></i><i style="height:88%"></i><i style="height:76%"></i><i style="height:100%"></i></div>
+        <div class="chart-labels"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+        <div class="dash-foot"><span>✦ One clear view of your business</span><span>NV SOFTWARE</span></div>
+      </div>
+      <div class="floating-card"><span class="float-icon">✓</span><div><b>Work smarter</b><small>Less admin. More progress.</small></div></div>
+    </div>
+  </section>
+  <section class="trust"><span>ONE SOFTWARE PARTNER</span><b>FOR EVERY STAGE OF YOUR BUSINESS</b><span>DESIGNED FOR GLOBAL TEAMS</span></section>
+  <section id="products" class="section products">
+    <div class="section-head"><div><div class="eyebrow">OUR SOFTWARE COLLECTION</div><h2>The right tools.<br><em>For real work.</em></h2></div><p>Choose a product that fits your business. Start online with SaaS or choose a downloadable license where available.</p></div>
+    <div class="filters"><button class="filter active" data-filter="all">All products</button><button class="filter" data-filter="business">Business</button><button class="filter" data-filter="retail">Retail & hospitality</button><button class="filter" data-filter="management">Management</button></div>
+    <div class="product-grid" id="productGrid"></div>
+  </section>
+  <section id="why" class="why">
+    <div class="why-copy"><div class="eyebrow">BUILT AROUND YOUR WORK</div><h2>Simple to start.<br><em>Powerful as you grow.</em></h2><p>We believe business software should make work easier, not add another layer of complexity. Our products are designed around clear workflows and practical results.</p><a class="button light" href="#contact">Talk to our team →</a></div>
+    <div class="feature-list"><article><span>01</span><div><h3>Online or desktop</h3><p>Choose browser-based access or a downloadable product when offered.</p></div></article><article><span>02</span><div><h3>One place for your work</h3><p>Keep important business information organised and easy to find.</p></div></article><article><span>03</span><div><h3>Support that helps</h3><p>Get clear onboarding and practical assistance as your team gets started.</p></div></article></div>
+  </section>
+  <section id="pricing" class="section pricing">
+    <div class="section-head"><div><div class="eyebrow">FLEXIBLE WAYS TO BUY</div><h2>Choose how you<br><em>want to work.</em></h2></div><p>Indicative launch pricing. Final plans, features and availability will be confirmed on each product page.</p></div>
+    <div class="pricing-grid"><div class="price-card"><span class="tag">ONLINE ACCESS</span><h3>Monthly plan</h3><p>Use supported software in your browser with an active subscription.</p><strong>From $10<small> / month</small></strong><ul><li>Online access</li><li>Product updates</li><li>Subscription management</li></ul><a href="#products">Explore SaaS products →</a></div><div class="price-card featured"><span class="tag">DOWNLOADABLE</span><h3>Perpetual license</h3><p>Purchase a supported downloadable version with a license for the agreed terms.</p><strong>From $59<small> / license</small></strong><ul><li>One-time purchase</li><li>License activation</li><li>Product documentation</li></ul><a href="#products">Explore licenses →</a></div></div>
+  </section>
+  <section id="contact" class="contact"><div><div class="eyebrow">LET'S BUILD BETTER WORKFLOWS</div><h2>Ready to move<br><em>your business forward?</em></h2></div><a class="button primary" href="mailto:sales@nouvellevisionsoftware.com">Contact sales ↗</a></section>
+</main>
+<footer><a class="brand" href="#"><span class="brand-mark">NV</span><span>NOUVELLE VISION<small>SOFTWARE</small></span></a><span>© <span id="year"></span> Nouvelle Vision Software. All rights reserved.</span><span>Smart Software. Powerful Businesses.</span></footer>
+<script src="config.js"></script><script src="app.js"></script>
+</body></html>
